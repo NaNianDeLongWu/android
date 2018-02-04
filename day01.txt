@@ -1,0 +1,133 @@
+day01    20180205
+持久化技术
+1.文件存储
+1)将数据存储到文件中
+  Context类提供一个openFileOutPut()方法,此方法接受俩个参数，第一参数为文件名，第二参数为文件操作模式,文件默认存储到/data/data/<package>/files/目录下。
+  
+    public void save(String inputText) {
+        FileOutputStream out = null;
+        BufferedWriter writer = null;
+        try {
+            out = openFileOutput("data", Context.MODE_PRIVATE);
+            writer = new BufferedWriter(new OutputStreamWriter(out));
+            writer.write(inputText);
+            Toast.makeText(getApplicationContext(),"save success",Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public String load(){
+        FileInputStream in= null;
+        BufferedReader reader =null;
+        StringBuilder content = new StringBuilder();
+        try {
+            in = openFileInput("data");
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line = "";
+            while((line=reader.readLine())!=null){
+                content.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(reader!=null){
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return content.toString();
+    }
+
+2.SharePreferences存储
+  要想使用SharedPrefereces来存储数据，首先要获取到SharedPreferences对象。
+
+  以下三种方法可以得到SharePreferences对象
+  1）Context类中的getSharedPreferences()方法
+  接收俩个参数，第一个用于指定SharedPreferences文件的名称,第二个参数用于指定操作模式。  
+  SharedPreferences文件都是存储在/data/data/<package name>/shared_prefs/目录下
+  
+  2）Activity类中的getPreferences()方法
+   只接受一个操作模式参数，因为使用此方法会自动将当前活动的类名作为文件名
+   
+  3）PreferenceManager类中的getDefaultSharedPreferences()方法
+   这是一个静态方法，它接收一个Context参数，并自动使用当前应用程序的包名作为前缀来命名SharedPreferences文件。
+
+  向SharedPreferences文件中存储数据分三步实现：
+  1）调用SharedPreferences对象的edit()方法来获取一个SharedPreferences.Editor对象
+  2）调用SharedPreferences对象中添加数据，使用put+数据类型()方法
+  3）调用apply()方法将添加数据提交
+  
+  从SharedPreferences中读取数据
+  SharedPreferences对象提供了一下get方法，用于对存储的数据进行读取。每种get方法对应了SharedPreences.Editor中的put方法。
+  
+  public class MainActivity extends AppCompatActivity {
+
+    Button saveData;
+    Button restoreData;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        saveData = (Button)findViewById(R.id.save_data);
+        saveData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+                editor.putString("name","Tome");
+                editor.putInt("age",28);
+                editor.putBoolean("married",false);
+                editor.apply();
+            }
+        });
+
+        restoreData = (Button)findViewById(R.id.restore_data);
+        restoreData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences pre = getSharedPreferences("data",MODE_PRIVATE);
+                String name = pre.getString("name","");
+                int age =pre.getInt("age",0);
+                boolean married = pre.getBoolean("married",false);
+                Log.d("Mainactivity","name is "+name);
+                Log.d("Mainactivity","age is "+age);
+                Log.d("Mainactivity","married is "+married);
+            }
+        });
+    }
+}
+
+3.SqlLite数据库存储
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
