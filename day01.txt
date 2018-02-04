@@ -2,7 +2,8 @@ day01    20180205
 持久化技术
 1.文件存储
 1)将数据存储到文件中
-  Context类提供一个openFileOutPut()方法,此方法接受俩个参数，第一参数为文件名，第二参数为文件操作模式,文件默认存储到/data/data/<package>/files/目录下。
+  Context类提供一个openFileOutPut()方法,此方法接受俩个参数，第一参数为文件名，第二参数为文件操作模式
+  文件默认存储到/data/data/<package>/files/目录下。
   
     public void save(String inputText) {
         FileOutputStream out = null;
